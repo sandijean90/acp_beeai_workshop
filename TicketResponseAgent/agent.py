@@ -18,33 +18,26 @@ load_dotenv()
 # Set up the ACP server
 server = Server()
 
-#OLD VERSION NO HELPERS
-# @server.agent()
-# async def ticket_response_agent(input: list[Message]) -> AsyncGenerator[RunYield, RunYieldResume]:
-#     """
-#     An agent that responds to customer support tickets with a simple sentence.
-#     """
-#     user_prompt = str(input[0]).strip()
-
-#     model = OpenAIModel('gpt-4.1-mini-2025-04-14', provider=OpenAIProvider(api_key=os.getenv('OPENAI_API_KEY')))
-#     TicketResponseAgent = Agent( model=model,
-#                             system_prompt=("You are a helpful assistant that responds to customer support tickets in one simple sentence."))
-#     response = await TicketResponseAgent.run(user_prompt)
-    
-#     assistant_message = Message(parts=[MessagePart(content=response.output)])
-#     yield {"messages": [assistant_message]}
-
-
 @server.agent()
 async def ticket_response_agent(input: list[Message]) -> AsyncGenerator[RunYield, RunYieldResume]:
     """
-    An agent that responds to customer support tickets with a simple sentence.
+    An agent that responds to customer support tickets .
     """
     user_prompt = flatten_messages(input)
 
     model = OpenAIModel('gpt-4.1-mini-2025-04-14', provider=OpenAIProvider(api_key=os.getenv('OPENAI_API_KEY')))
     TicketResponseAgent = Agent( model=model,
-                            system_prompt=("You are a helpful assistant that responds to customer support tickets in one simple sentence."))
+                            system_prompt=("""
+                                           You are a helpful customer support agent that creates clear, helpful, human-sounding replies to a customer.
+                                           Tone & Style Matrix:
+                                            Category   | Primary Tone        | Secondary Goals
+                                            Billing    | Efficient, courteous | Reassure accuracy, outline next steps, offer quick resolution
+                                            Technical  | Clear, solution-oriented | Provide concise troubleshooting or escalation info
+                                            Complaint  | Empathetic, apologetic | Acknowledge feelings, accept responsibility where appropriate, explain corrective action
+                                            Account    | Professional, supportive | Clarify account status or changes, confirm security measures
+                                            Feedback   | Appreciative, receptive | Thank the customer, highlight how feedback is used
+                                            Other      | Warm, helpful        | Clarify intent, offer assistance
+                                           """))
     response = await TicketResponseAgent.run(user_prompt)
     
     yield package_response(response.output)
