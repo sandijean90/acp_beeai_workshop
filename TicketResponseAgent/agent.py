@@ -18,7 +18,7 @@ load_dotenv()
 # Set up the ACP server
 server = Server()
 
-
+#OLD VERSION NO HELPERS
 # @server.agent()
 # async def ticket_response_agent(input: list[Message]) -> AsyncGenerator[RunYield, RunYieldResume]:
 #     """
@@ -33,6 +33,7 @@ server = Server()
     
 #     assistant_message = Message(parts=[MessagePart(content=response.output)])
 #     yield {"messages": [assistant_message]}
+
 
 @server.agent()
 async def ticket_response_agent(input: list[Message]) -> AsyncGenerator[RunYield, RunYieldResume]:
