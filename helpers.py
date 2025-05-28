@@ -1,7 +1,7 @@
 from typing import List, Dict
 from datetime import datetime, timezone
 from acp_sdk.models import Message, MessagePart
-
+import json
 
 def flatten_messages(messages: List[Message]) -> str:
     """
@@ -29,14 +29,26 @@ def flatten_messages(messages: List[Message]) -> str:
 #  The last three messages (good for short-context agents)
 #user_prompt = flatten_messages(msgs[-3:])
 
-def package_response(text: str) -> Dict[str, List[Message]]:
-    """
-    Wrap a plain-text model output into the structure expected by the ACP runner:
+#OLD VERSION STRING OUTPUT ONLY
+# def package_response(text: str) -> Dict[str, List[Message]]:
+#     """
+#     Wrap a plain-text model output into the structure expected by the ACP runner:
 
-        {"messages": [Message(parts=[MessagePart(content=<text>)])]}
-    """
+#         {"messages": [Message(parts=[MessagePart(content=<text>)])]}
+#     """
+#     assistant_message = Message(
+#         parts=[MessagePart(content=text)],
+#         created_at=datetime.now(timezone.utc),
+#         completed_at=datetime.now(timezone.utc),
+#     )
+#     return {"messages": [assistant_message]}
+
+
+def package_response(data: str | dict) -> Dict[str, List[Message]]:
+    if isinstance(data, dict):          # auto-convert
+        data = json.dumps(data, separators=(",", ":"))
     assistant_message = Message(
-        parts=[MessagePart(content=text)],
+        parts=[MessagePart(content=data)],
         created_at=datetime.now(timezone.utc),
         completed_at=datetime.now(timezone.utc),
     )
