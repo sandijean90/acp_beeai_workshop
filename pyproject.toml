@@ -1,7 +1,7 @@
 [project]
 name = "acp-beeai-workshop"
 version = "0.1.0"
-description = "Add your description here"
+description = "Add my description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
