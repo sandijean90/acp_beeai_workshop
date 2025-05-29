@@ -5,6 +5,7 @@ from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
 #ACP SDK
+from acp_sdk import Metadata
 from acp_sdk.models import Message, MessagePart
 from acp_sdk.server import RunYield, RunYieldResume, Server
 from collections.abc import AsyncGenerator
@@ -18,7 +19,9 @@ load_dotenv()
 # Set up the ACP server
 server = Server()
 
-@server.agent()
+@server.agent(
+    metadata=Metadata(ui={"type": "hands-off"})
+)
 async def ticket_response_agent(input: list[Message]) -> AsyncGenerator[RunYield, RunYieldResume]:
     """
     An agent that responds to customer support tickets .
