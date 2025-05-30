@@ -9,6 +9,7 @@ from collections.abc import AsyncGenerator
 #Helper imports     
 from helpers import package_response, flatten_messages
 from typing import List, Optional
+import os
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 
@@ -69,5 +70,9 @@ async def ticket_triage_agent(input: list[Message]) -> AsyncGenerator[RunYield, 
         )
         yield package_response(response.object)
 
-#Run the server
-server.run()
+def run():
+    server.run(host=os.getenv("HOST", "127.0.0.1"), port=int(os.getenv("PORT", 8000)))
+
+
+if __name__ == "__main__":
+    run()
